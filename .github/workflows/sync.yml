@@ -1,0 +1,22 @@
+name: Scheduled Merge Remote Action
+on:
+  schedule:
+    - cron:  '0 0 * * *' # 每天北京时间早上 8 点运行 (UTC 0:00)
+  workflow_dispatch:      # 允许手动触发
+
+jobs:
+  merge-upstream:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
+      - name: Sync Upstream
+        uses: dabreadman/sync-upstream-repo@v1.3.0
+        with:
+          upstream_repo: "https://github.com/ZhuLinsen/daily_stock_analysis.git"
+          upstream_branch: "main" # 或者 master，取决于原仓库的主分支名
+          target_branch: "main"   # 你的仓库分支名
+          github_token: ${{ secrets.GITHUB_TOKEN }}
